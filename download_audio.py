@@ -7,10 +7,6 @@ import time
 from mutagen.easyid3 import EasyID3
 from mutagen.id3 import ID3, APIC
 
-# Get cookies path from command line (optional)
-cookies_path = None
-if len(sys.argv) > 1:
-    cookies_path = sys.argv[1]
 
 # =======================
 # Load config from environment variables
@@ -38,7 +34,7 @@ else:
 # yt-dlp options
 ydl_opts = {
     'format': 'bestaudio/best',
-    'cookies-from-browser': 'cookies.txt',
+    'cookies': 'cookies.txt',
     'quiet': True,
     'outtmpl': os.path.join(OUTPUT_DIR, '%(title)s.%(ext)s'),
     'postprocessors': [{

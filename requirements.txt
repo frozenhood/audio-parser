@@ -1,3 +1,5 @@
 yt-dlp
 mutagen
 requests
+google-auth-oauthlib
+google-auth-httplib2

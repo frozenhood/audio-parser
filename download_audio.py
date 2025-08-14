@@ -38,7 +38,7 @@ else:
 # yt-dlp options
 ydl_opts = {
     'format': 'bestaudio/best',
-    'cookies': 'cookies.txt',
+    'cookies-from-browser': 'cookies.txt',
     'quiet': True,
     'outtmpl': os.path.join(OUTPUT_DIR, '%(title)s.%(ext)s'),
     'postprocessors': [{

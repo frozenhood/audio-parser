@@ -38,13 +38,13 @@ else:
 # yt-dlp options
 ydl_opts = {
     'format': 'bestaudio/best',
+    'cookies': 'cookies.txt',
     'quiet': True,
     'outtmpl': os.path.join(OUTPUT_DIR, '%(title)s.%(ext)s'),
     'postprocessors': [{
         'key': 'FFmpegExtractAudio',
         'preferredcodec': 'mp3',
         'preferredquality': '192',
-        'cookies': 'cookies.txt',
     }],
 }
 

@@ -2,6 +2,8 @@ import yt_dlp
 import os
 import sys
 import requests
+import random
+import time
 from mutagen.easyid3 import EasyID3
 from mutagen.id3 import ID3, APIC
 
@@ -18,6 +20,7 @@ CHANNEL_URL  = os.environ.get("CHANNEL_URL")
 OUTPUT_DIR   = os.environ.get("OUTPUT_DIR", "downloads")
 TRACK_FILE   = os.environ.get("TRACK_FILE", "downloaded.txt")
 COVER_URL    = os.environ.get("COVER_URL")  # URL of cover image
+MAX_VIDEOS   = int(os.environ.get("MAX_VIDEOS", 5))  # limit per run
 # =======================
 
 if not CHANNEL_NAME or not CHANNEL_URL:
@@ -49,7 +52,7 @@ if cookies_path:
 
 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
     info_dict = ydl.extract_info(CHANNEL_URL, download=False)
-    entries = info_dict.get("entries", [])
+    entries = info_dict.get("entries", [])[:MAX_VIDEOS]  # limit number of videos
 
     for video in entries:
         video_id = video.get("id")
@@ -57,8 +60,13 @@ with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             continue
         url = f"https://www.youtube.com/watch?v={video_id}"
         print(f"Downloading: {video.get('title')}")
-        ydl.download([url])
-        downloaded.add(video_id)
+        try:
+            ydl.download([url])
+            downloaded.add(video_id)
+        except yt_dlp.utils.DownloadError as e:
+            print(f"Failed to download {video.get('title')}: {e}")
+        # Random sleep between 2–6 seconds to avoid 429
+        time.sleep(random.randint(2, 6))
 
 # Update downloaded.txt
 with open(TRACK_FILE, "w") as f:

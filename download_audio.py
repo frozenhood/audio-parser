@@ -1,8 +1,14 @@
 import yt_dlp
 import os
+import sys
 import requests
 from mutagen.easyid3 import EasyID3
 from mutagen.id3 import ID3, APIC
+
+# Get cookies path from command line (optional)
+cookies_path = None
+if len(sys.argv) > 1:
+    cookies_path = sys.argv[1]
 
 # =======================
 # Load config from environment variables
@@ -11,7 +17,7 @@ CHANNEL_NAME = os.environ.get("CHANNEL_NAME")
 CHANNEL_URL  = os.environ.get("CHANNEL_URL")
 OUTPUT_DIR   = os.environ.get("OUTPUT_DIR", "downloads")
 TRACK_FILE   = os.environ.get("TRACK_FILE", "downloaded.txt")
-COVER_URL    = os.environ.get("COVER_URL")
+COVER_URL    = os.environ.get("COVER_URL")  # URL of cover image
 # =======================
 
 if not CHANNEL_NAME or not CHANNEL_URL:
@@ -37,6 +43,9 @@ ydl_opts = {
         'preferredquality': '192',
     }],
 }
+
+if cookies_path:
+    ydl_opts['cookiefile'] = cookies_path
 
 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
     info_dict = ydl.extract_info(CHANNEL_URL, download=False)

@@ -17,11 +17,23 @@ jobs:
       with:
         python-version: '3.11'
 
+    - name: Cache pip
+      uses: actions/cache@v3
+      with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
     - name: Install dependencies
       run: |
-        sudo apt update
-        sudo apt install ffmpeg -y
-        pip install yt-dlp mutagen requests
+         sudo apt update
+         sudo apt install ffmpeg -y
+         pip install --upgrade pip
+         pip install -r requirements.txt
+
+    - name: Write cookies
+      run: echo "${{ secrets.YT_COOKIES }}" > cookies.txt
 
     - name: Download new audio
       env:
@@ -30,7 +42,7 @@ jobs:
         COVER_URL: ${{ vars.COVER_URL }}
         OUTPUT_DIR: downloads
         TRACK_FILE: downloaded.txt
-      run: python download_audio.py
+      run: python download_audio.py cookies.txt
 
     - name: Commit & push new audio
       run: |

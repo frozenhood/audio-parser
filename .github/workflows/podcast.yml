@@ -1,0 +1,41 @@
+name: YouTube to Podcast
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'  # every 15 minutes
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install ffmpeg -y
+        pip install yt-dlp mutagen
+
+    - name: Download new audio
+      env:
+        CHANNEL_NAME: ${{ vars.CHANNEL_NAME }}
+        CHANNEL_URL: ${{ vars.CHANNEL_URL }}
+        COVER_URL: ${{ vars.COVER_URL }}
+        OUTPUT_DIR: downloads
+        TRACK_FILE: downloaded.txt
+      run: python download_audio.py
+
+    - name: Commit & push new audio
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "actions@github.com"
+        git add downloads/ downloaded.txt
+        git commit -m "Add new episodes" || echo "No new episodes"
+        git push

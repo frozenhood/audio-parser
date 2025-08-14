@@ -42,6 +42,7 @@ jobs:
         COVER_URL: ${{ vars.COVER_URL }}
         OUTPUT_DIR: downloads
         TRACK_FILE: downloaded.txt
+        MAX_VIDEOS: 1
       run: python download_audio.py cookies.txt
 
     - name: Commit & push new audio

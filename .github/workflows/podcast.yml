@@ -31,10 +31,6 @@ jobs:
          pip install --upgrade pip
          pip install -r requirements.txt
 
-    - name: Generate cookies.txt from refresh token
-      run: |
-        python generate_cookies.py "${{ secrets.YT_REFRESH_TOKEN }}" "${{ secrets.YT_CLIENT_ID }}" "${{ secrets.YT_CLIENT_SECRET }}"
-
     - name: Download new audio
       env:
         CHANNEL_NAME: ${{ vars.CHANNEL_NAME }}

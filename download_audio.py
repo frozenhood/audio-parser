@@ -48,7 +48,7 @@ ydl_opts = {
 }
 
 if cookies_path:
-    ydl_opts['cookiefile'] = cookies_path
+    ydl_opts['cookie'] = cookies_path
 
 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
     info_dict = ydl.extract_info(CHANNEL_URL, download=False)
